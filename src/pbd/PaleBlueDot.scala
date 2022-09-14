@@ -23,9 +23,17 @@ object PaleBlueDot {
    */
   def getCountryCode(countriesFilename: String, countryName: String): String = {
     val countriesFile: BufferedSource = Source.fromFile(countriesFilename)
-
-
-    ""
+    var countrycode: String = ""
+    for (line <- countriesFile.getLines()){
+      var SplitLine: Array[String] = line.split("#")
+      var country : String = SplitLine(0)
+      var LCcountry : String = country.toLowerCase()
+      if (LCcountry == countryName.toLowerCase()){
+        countrycode = SplitLine(1)
+      }
+    }
+    var rtrn : String = countrycode.toLowerCase()
+    rtrn
   }
 
 
