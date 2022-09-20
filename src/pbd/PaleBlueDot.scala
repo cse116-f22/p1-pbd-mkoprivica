@@ -49,10 +49,21 @@ object PaleBlueDot {
    * @return The average population of cities in the given country
    */
   def averagePopulation(countriesFilename: String, citiesFilename: String, countryName: String): Double = {
-
-    0.0
+    var country: String = getCountryCode(countriesFilename, countryName)
+    var population: Double = 0.0
+    var number_of_cities: Double = 0.0
+    var average : Double = population/number_of_cities
+    val citiesFile: BufferedSource = Source.fromFile(citiesFilename)
+    for (line <- citiesFile.getLines().drop(1).map(_.split(","))){
+      if (country == line(0)){
+        population += line(3).toDouble
+        number_of_cities += 1.0
+      }else{
+        0.0
+      }
+    }
+    average
   }
-
 
   /**
    * Task 3
