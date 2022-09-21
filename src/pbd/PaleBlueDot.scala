@@ -81,8 +81,18 @@ object PaleBlueDot {
    * @return A Map containing the name and population of every city in the given country
    */
   def cityPopulations(countriesFilename: String, citiesFilename: String, countryName: String, regionCode: String): Map[String, Int] = {
+    var returnMap : Map[String,Int] = Map()
+    var country: String = getCountryCode(countriesFilename, countryName)
+    val citiesFile: BufferedSource = Source.fromFile(citiesFilename)
+    for (line <- citiesFile.getLines().drop(1).map(_.split(","))){
+      if (country == line(0) && regionCode == line(2)){
+        returnMap = returnMap + ( line(1) -> line(3).toInt )
 
-    Map()
+      }else{
+        Map()
+      }
+    }
+    returnMap
   }
 
 
@@ -95,8 +105,16 @@ object PaleBlueDot {
    * @return All city names in given country with a population > the average populations of cities in that country
    */
   def aboveAverageCities(countriesFilename: String, citiesFilename: String, countryName: String): List[String] = {
-
-    List()
+    var returnList : List[String] = List()
+    var country: String = getCountryCode(countriesFilename, countryName)
+    var avgpop: Double = averagePopulation(countriesFilename,citiesFilename, countryName)
+    val citiesFile: BufferedSource = Source.fromFile(citiesFilename)
+    for (line <- citiesFile.getLines().drop(1).map(_.split(","))){
+      if (country == line(0) && (line(3).toDouble > avgpop)){
+        returnList = returnList :+ line(1)
+        }
+      }
+    returnList
   }
 
 
