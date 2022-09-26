@@ -4,6 +4,7 @@ import java.awt.Desktop
 import java.net.URI
 import scala.io.{BufferedSource, Source}
 
+
 object PaleBlueDot {
 
 
@@ -135,8 +136,35 @@ object PaleBlueDot {
    *         exactly as they appear in the cities file (ie. the List should have exactly 3 values to return
    *         a single city
    */
-  def closestCity(citiesFilename: String, location: List[Double]): List[String] = {
-    List("Country Code", "City Name", "Region")
+
+  def HaversineFormula(pointA: List[Double], pointB: List[Double]): Double ={
+    val EarthRadius = 6371
+    val latDistance = Math.toRadians(pointA(0) - pointB(0))
+    val lngDistance = Math.toRadians(pointA(1) - pointB(1))
+    val sinLat = Math.sin(latDistance / 2)
+    val sinLng = Math.sin(lngDistance / 2)
+    val a = sinLat * sinLat +
+      (Math.cos(Math.toRadians(pointA(0))) *
+        Math.cos(Math.toRadians(pointB(0))) *
+        sinLng * sinLng)
+    val c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+    val d: Double = (EarthRadius * c)
+    d
+  }
+
+   def closestCity(citiesFilename: String, location: List[Double]): List[String] = {
+    var Answer: List[String] = List()
+    var SmallestDistance: Double = 100000.0
+    val citiesFile: BufferedSource = Source.fromFile(citiesFilename)
+    for (line <- citiesFile.getLines().drop(1).map(_.split(","))) {
+      var LineLocation: List[Double] = List(line(4).toDouble, line(5).toDouble)
+      val distance: Double = HaversineFormula(location, LineLocation)
+      if (distance < SmallestDistance) {
+        SmallestDistance = distance
+        Answer = List(line(0), line(1), line(2))
+      }
+    }
+    Answer
   }
 
 
@@ -159,6 +187,7 @@ object PaleBlueDot {
 
   def main(args: Array[String]): Unit = {
     openMap(List(43.002743, -78.7874136))
+
   }
 
 }
